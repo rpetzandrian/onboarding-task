@@ -1,34 +1,37 @@
 import * as Joi from 'joi';
 import { IObject } from 'rey-common';
 
-export const COMMON_SCHEME = {
-    PAGINATION: Joi.object({
-        page: Joi.number().integer().positive().default(1).optional(),
-        per_page: Joi.number().integer().positive().default(10).optional(),
-        sort: Joi.string().optional().default('-created_at')
+export const COMMON_PARAMS_ID = Joi.object({
+    params: Joi.object({
+        id: Joi.string().required()
     })
-};
+});
 
 export const SCHEME: IObject<Joi.ObjectSchema> = {
-    LOGIN: Joi.object({
-        body: Joi.object({
-            username: Joi.string().required(),
-            password: Joi.string().required()
-        }).required()
-    }),
-    CREATE_POST: Joi.object({
+    CREATE_ARTICLE: Joi.object({
         body: Joi.object({
             title: Joi.string().min(4).max(50).required(),
-            content: Joi.string().min(10).required()
+            content: Joi.string().min(10).required(),
+            author_id: Joi.string().required(),
         }).required()
     }),
-    UPDATE_POST: Joi.object({
+    UPDATE_ARTICLE: Joi.object({
         body: Joi.object({
+            id: Joi.string().required(),
             title: Joi.string().min(4).max(50).optional(),
-            content: Joi.string().min(10).optional()
+            content: Joi.string().min(10).optional(),
+            author_id: Joi.string().optional(),
         }).required(),
-        params: Joi.object({
-            id: Joi.string().required()
+    }),
+    CREATE_AUTHOR: Joi.object({
+        body: Joi.object({
+            name: Joi.string().min(3).max(50).required()
+        }).required()
+    }),
+    UPDATE_AUTHOR: Joi.object({
+        body: Joi.object({
+            id: Joi.string().required(),
+            name: Joi.string().min(3).max(50).optional()
         }).required()
     })
 };
