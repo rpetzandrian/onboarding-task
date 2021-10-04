@@ -7,19 +7,16 @@ import ArticleService from '../article_service';
 
 export class ArticleServiceImpl extends Service implements ArticleService {
     constructor(
-        // private ArticleRepo: ArticleRepository
-        private ArticleRepo: ArticleRepositoryImpl
+        private ArticleRepo: ArticleRepository
     ) {
         super();
     }
 
     public async getArticles(): Promise<Article[]> {
-        // return await this.ArticleRepo.findAll({}, {});
         return await this.ArticleRepo.findAllWithItem({});
     }
 
     public async getArticleById(id: number | string | undefined): Promise<Article> {
-        // return await this.ArticleRepo.findOneOrFail({ id });
         const article = await this.ArticleRepo.findByIdWithItem(id);
         if (!article) {
             throw new NotFoundError('ARTICLE_NOT_FOUND');
@@ -28,7 +25,13 @@ export class ArticleServiceImpl extends Service implements ArticleService {
     }
 
     public async createArticle(data: Partial<Article>): Promise<any> {
-        return await this.ArticleRepo.create(data);
+        let article;
+        try {
+            article = await this.ArticleRepo.create(data);
+        } catch (error) {
+            throw new InternalServerError('error creating article');
+        }
+        return article;
     }
 
     public async updateArticle(data: Partial<Article>): Promise<any> {

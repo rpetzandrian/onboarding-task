@@ -17,15 +17,12 @@ export class AuthorRepositoryImpl extends SQLRepository<Author> implements Autho
         }).then(rows => rows.map(row => row.get()));
     }
 
-    async findByIdWithItemOrFail(id: number | string): Promise<any> {
+    async findByIdWithItem(id: number | string | undefined): Promise<any> {
         const db = this.getInstance();
         return db.model[this.modelName].findOne({
             where: { id },
             include: 'article'
         }).then((res: any): Author => {
-            if (!res) {
-                throw new NotFoundError(`${camelToSnakeCase(this.modelName).toUpperCase()}_NOT_FOUND`);
-            }
             return res;
         }
         );
